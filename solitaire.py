@@ -21,26 +21,35 @@ class Solitaire:
         self.screen = pygame.display.set_mode((800, 600))
         pygame.display.set_caption("Jogo")
 
+        self.dragged_card = None
+
         self.background = Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((0, 0, 0))
 
-        cards = SpriteSheet("cards_sprite.gif", 13, 5)
+        cards = SpriteSheet("res/cards_sprite.gif", 13, 5)
 
         self.group = Group()
-        self.group.add(Card(cards.get_sprite(0, 0), (20, 20)))
+        
+        for i in range(0, 50):
+            self.group.add(Card(cards.get_sprite(0, 0), (i, i)))
 
     def update(self):
         for event in pygame.event.get():
             if event.type == QUIT:
                 self.should_quit = True
             elif event.type == MOUSEBUTTONDOWN:
-                for sprite in self.group:
-                    sprite.mouse_move(event.pos)
-                    sprite.check_click(event.pos)
+                for sprite in reversed(self.group.sprites()):
+                    if sprite.start_drag(event.pos):
+                        self.dragged_card = sprite
+                        break
             elif event.type == MOUSEMOTION:
-                for sprite in self.group:
-                    sprite.check_click(event.pos)
+                if self.dragged_card:
+                    self.dragged_card.mouse_move(event.pos)
+            elif event.type == MOUSEBUTTONUP:
+                if self.dragged_card:
+                    self.dragged_card.end_drag()
+                    self.dragged_card = None
 
 
     def render(self):
