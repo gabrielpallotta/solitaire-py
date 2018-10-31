@@ -13,7 +13,7 @@ class GameState(Enum):
     GAME_OVER = 3
 
 class Solitaire:
-    game_state = GameState.MENU
+    game_state = GameState.GAME
     should_quit = False
 
     def __init__(self):
@@ -25,9 +25,9 @@ class Solitaire:
 
         self.background = Surface(self.screen.get_size())
         self.background = self.background.convert()
-        self.background.fill((0, 0, 0))
+        self.background.fill((68, 163, 92))
 
-        cards = SpriteSheet("res/cards_sprite.gif", 13, 5)
+        cards = SpriteSheet("res/cards_sprite.png", 13, 5)
 
         self.group = Group()
         
@@ -54,6 +54,5 @@ class Solitaire:
 
     def render(self):
         self.screen.blit(self.background, (0, 0))
-        # self.screen.blit(self.card_spritesheet.get_sprite(0, 0), (20, 20))
         self.group.draw(self.screen)
         pygame.display.flip()
