@@ -7,7 +7,5 @@ class SpriteSheet:
         self.w = self.sprite_sheet.get_width() / h_imgs;
         self.h = self.sprite_sheet.get_height() / v_imgs;
     
-    def get_sprite(self, i, j):
-        print(i * self.w)
-        print(j * self.h)
+    def get_image(self, i, j):
         return self.sprite_sheet.subsurface(Rect(i * self.w, j * self.h, self.w, self.h))

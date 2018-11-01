@@ -3,9 +3,9 @@ from pygame.locals import *
 from pygame.sprite import Group
 from pygame import Surface
 
-from enum import Enum
-from card import Card
 from spritesheet import SpriteSheet
+from enum import Enum
+from card import Card, CardSuit
 
 class GameState(Enum):
     MENU = 1
@@ -19,7 +19,9 @@ class Solitaire:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((800, 600))
-        pygame.display.set_caption("Jogo")
+        pygame.display.set_caption("Solitaire")
+
+        self.cards_spritesheet = SpriteSheet("res/cards_sprite.png", 13, 5)
 
         self.dragged_card = None
 
@@ -27,12 +29,26 @@ class Solitaire:
         self.background = self.background.convert()
         self.background.fill((68, 163, 92))
 
-        cards = SpriteSheet("res/cards_sprite.png", 13, 5)
-
         self.group = Group()
         
         for i in range(0, 50):
-            self.group.add(Card(cards.get_sprite(0, 0), (i, i)))
+            self.group.add(Card(self.get_card_image(CardSuit.HEARTS, 2), (i, i)))
+
+    def get_card_image(self, suit, value):
+        value -= 1
+        if value == 0:
+            value = 12
+
+        if suit == CardSuit.DIAMONDS:
+            suit = 1
+        elif suit == CardSuit.SPADES:
+            suit = 3
+        elif suit == CardSuit.HEARTS:
+            suit = 0
+        elif suit == CardSuit.CLUBS:
+            suit = 2
+        
+        return self.cards_spritesheet.get_image(suit, value)
 
     def update(self):
         for event in pygame.event.get():

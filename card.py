@@ -2,6 +2,14 @@ import pygame
 from pygame.locals import *
 from pygame.sprite import Sprite
 
+from enum import Enum
+
+class CardSuit(Enum):
+    DIAMONDS = 1
+    SPADES = 2
+    HEARTS = 3
+    CLUBS = 4
+
 class Card(Sprite):
     def __init__(self, image, pos = (0, 0)):
         pygame.sprite.Sprite.__init__(self)
