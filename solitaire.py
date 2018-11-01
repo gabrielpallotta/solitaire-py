@@ -35,8 +35,8 @@ class Solitaire:
             self.group.add(Card(self.get_card_image(CardSuit.HEARTS, 2), (i, i)))
 
     def get_card_image(self, suit, value):
-        value -= 1
-        if value == 0:
+        value -= 2
+        if value < 0:
             value = 12
 
         if suit == CardSuit.DIAMONDS:
@@ -48,7 +48,7 @@ class Solitaire:
         elif suit == CardSuit.CLUBS:
             suit = 2
         
-        return self.cards_spritesheet.get_image(suit, value)
+        return self.cards_spritesheet.get_image(value, suit)
 
     def update(self):
         for event in pygame.event.get():
