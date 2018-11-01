@@ -3,9 +3,9 @@ from pygame.locals import *
 from pygame.sprite import Group
 from pygame import Surface
 
-from spritesheet import SpriteSheet
 from enum import Enum
 from card import Card, CardSuit
+from cardpile import *
 
 class GameState(Enum):
     MENU = 1
@@ -21,54 +21,51 @@ class Solitaire:
         self.screen = pygame.display.set_mode((800, 600))
         pygame.display.set_caption("Solitaire")
 
-        self.cards_spritesheet = SpriteSheet("res/cards_sprite.png", 13, 5)
+        CardSprite.load_spritesheet()
 
-        self.dragged_card = None
+        self.dragged_cards = None
 
         self.background = Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((68, 163, 92))
 
-        self.group = Group()
-        
+        self.cards = []
+        for i in range(1, 5):
+            for j in range(1, 14):
+                self.cards.insert(len(self.cards), Card(i, j, False))
+
+        # Card piles
+        self.stock = StockPile((0, 0))
+        self.tableaus = []
+        for i in range(0, 7):
+            self.tableaus.insert(len(self.tableaus), TableauPile((100 * i, 50)))
+            for j in range (0, i + 1):
+                self.tableaus[i].add_card(self.cards[10])
+
         for i in range(0, 50):
-            self.group.add(Card(self.get_card_image(CardSuit.HEARTS, 2), (i, i)))
-
-    def get_card_image(self, suit, value):
-        value -= 2
-        if value < 0:
-            value = 12
-
-        if suit == CardSuit.DIAMONDS:
-            suit = 1
-        elif suit == CardSuit.SPADES:
-            suit = 3
-        elif suit == CardSuit.HEARTS:
-            suit = 0
-        elif suit == CardSuit.CLUBS:
-            suit = 2
-        
-        return self.cards_spritesheet.get_image(value, suit)
+            self.stock.add_card(self.cards[10])
 
     def update(self):
         for event in pygame.event.get():
             if event.type == QUIT:
                 self.should_quit = True
             elif event.type == MOUSEBUTTONDOWN:
-                for sprite in reversed(self.group.sprites()):
+                for tableaus in self.tableaus:
                     if sprite.start_drag(event.pos):
                         self.dragged_card = sprite
                         break
             elif event.type == MOUSEMOTION:
-                if self.dragged_card:
-                    self.dragged_card.mouse_move(event.pos)
+                
             elif event.type == MOUSEBUTTONUP:
-                if self.dragged_card:
-                    self.dragged_card.end_drag()
-                    self.dragged_card = None
-
+                
+        self.stock.update()
+        for tableau in self.tableaus:
+            tableau.update()
 
     def render(self):
         self.screen.blit(self.background, (0, 0))
-        self.group.draw(self.screen)
+        self.stock.draw(self.screen)
+        for tableau in self.tableaus:
+            tableau.draw(self.screen)
+
         pygame.display.flip()
