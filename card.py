@@ -12,32 +12,25 @@ class CardSuit(Enum):
     HEARTS = 3
     CLUBS = 4
 
-class Card:
-    def __init__(self, suit, value, visible):
+class Card(Sprite):
+    def __init__(self, suit, value, visible, pos = (0, 0)):
+        Sprite.__init__(self)
         self.suit = suit
         self.value = value
         self.visible = visible
-
-class CardSprite(Sprite):
-    def __init__(self, card, pos = (0, 0)):
-        Sprite.__init__(self)
-        self.card = card
-        self.image = CardSprite.get_card_image(self.card)
+        self.image = Card.get_card_image(self.suit, self.value, self.visible)
         self.rect = Rect(pos[0], pos[1], self.image.get_width(), self.image.get_height())
         self.moving = False
         self.last = pos
 
     @staticmethod
     def load_spritesheet():
-        CardSprite.cards_spritesheet = SpriteSheet("res/cards_sprite.gif", 13, 5)
+        Card.cards_spritesheet = SpriteSheet("res/cards_sprite.gif", 13, 5)
 
     @staticmethod
-    def get_card_image(card):
-        if not card.visible:
-            return CardSprite.cards_spritesheet.get_image(0, 4)
-
-        suit = card.suit
-        value = card.value
+    def get_card_image(suit, value, visible):
+        if not visible:
+            return Card.cards_spritesheet.get_image(0, 4)
 
         value -= 2
         if value < 0:
@@ -52,10 +45,14 @@ class CardSprite(Sprite):
         elif suit == CardSuit.CLUBS:
             suit = 2
         
-        return CardSprite.cards_spritesheet.get_image(value, suit)
+        return Card.cards_spritesheet.get_image(value, suit)
     
     def update_card(card):
         self.card = card
-        self.image = CardSprite.get_card_image(self.card)
+        self.image = Card.get_card_image(self.card)
 
-
+    def move(self, pos):
+        # if self.moving:
+        self.rect.x += pos[0]
+        self.rect.y += pos[1]
+            # self.last = new_mouse_pos
