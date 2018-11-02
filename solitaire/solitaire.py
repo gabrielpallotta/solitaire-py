@@ -35,15 +35,19 @@ class Solitaire:
         self.cards = []
         for i in range(0, 4):
             for j in range(0, 13):
-                self.cards.append((Card(i, j, True)))
+                self.cards.append((Card(i, j, False)))
+        
+        shuffle(self.cards)
 
         # Card piles
         self.stock = StockPile((0, 0))
         self.tableaus = []
         for i in range(0, 7):
-            self.tableaus.append(TableauPile((100 * i, 50)))
-            for j in range (0, i + 1):
+            self.tableaus.append(TableauPile((50 + 100 * i, 130)))
+            for j in range (0, i):
                 self.tableaus[i].add_card(self.cards[7 * i + j])
+            self.cards[7 * i + i].unhide()
+            self.tableaus[i].add_card(self.cards[7 * i + i])
 
         # for i in range(0, 50):
         #     self.stock.add_card(self.cards[10])
@@ -73,6 +77,8 @@ class Solitaire:
                     for card in self.dragged_cards:
                         self.dragged_cards_pile.add_card(card)
                     self.dragged_cards = []
+                    self.dragged_cards_pile.end_drag()
+                    self.dragged_cards_pile = None
                     
         self.stock.update()
         for tableau in self.tableaus:

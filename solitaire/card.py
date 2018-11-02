@@ -47,9 +47,16 @@ class Card(Sprite):
         
         return Card.cards_spritesheet.get_image(value, suit)
     
-    def update_card(card):
+    def unhide(self):
+        self.visible = True
+        self.update_image()
+
+    def hide(self):
         self.card = card
-        self.image = Card.get_card_image(self.card)
+        self.update_image()
+
+    def update_image(self):
+        self.image = Card.get_card_image(self.suit, self.value, self.visible)
 
     def move(self, pos):
         # if self.moving:

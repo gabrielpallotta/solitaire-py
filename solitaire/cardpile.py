@@ -16,7 +16,7 @@ class TableauPile(CardPile):
 
     def add_card(self, card):
         card.rect.x = self.pos[0]
-        card.rect.y = self.pos[1] + 50 * len(self.sprites())
+        card.rect.y = self.pos[1] + 30 * len(self.sprites())
         # if not self.cards:
         #     if not visible:
         Group.add(self, card)
@@ -55,6 +55,10 @@ class TableauPile(CardPile):
             return True
         else:
             return False
+    
+    def end_drag(self):
+        if self.sprites():
+            self.sprites()[-1].unhide()
 
 class FoundationPile(CardPile):
     def __init__(self, pos):
