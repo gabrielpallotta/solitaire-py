@@ -26,10 +26,8 @@ class Solitaire:
 
         Card.load_spritesheet()
 
-        self.spacing = spacing
-
-        width = 8 * self.spacing + 7 * int(Card.width)
-        height = 2 * self.spacing + int(Card.height) + 500
+        width = 8 * spacing + 7 * int(Card.width)
+        height = 2 * spacing + int(Card.height) + 500
         self.screen = pygame.display.set_mode((width, height))
         
         self.dragged_cards_pile = None
@@ -46,22 +44,22 @@ class Solitaire:
         shuffle(cards)
  
         # Stock pile
-        self.stock = StockPile(Rect(self.spacing, self.spacing, Card.width, Card.height))
+        self.stock = StockPile(Rect(spacing, spacing, Card.width, Card.height))
         
         # Waste pile
-        self.waste = WastePile(Rect(100, 0, Card.width, Card.height))
+        self.waste = WastePile(Rect(2 * spacing + Card.width, spacing, Card.width, Card.height), (Card.width + spacing ) / 2)
         
         # Foundation piles
         self.foundations = []
         for i in range (0, 4):
-            foundation_rect = Rect(4 * self.spacing + 3 * Card.width + (self.spacing + Card.width) * i, self.spacing, Card.width, Card.height)
+            foundation_rect = Rect(4 * spacing + 3 * Card.width + (spacing + Card.width) * i, spacing, Card.width, Card.height)
             self.foundations.append(FoundationPile(foundation_rect, Card.cards_spritesheet.get_image(2, 4)))
 
         # Tableau piles
         self.tableaus = []
         index = 0
         for i in range(0, 7):
-            tableau_rect = Rect(self.spacing + (self.spacing + Card.width) * i, 2 * self.spacing + Card.height, Card.width, Card.height)
+            tableau_rect = Rect(spacing + (spacing + Card.width) * i, 2 * spacing + Card.height, Card.width, Card.height)
             self.tableaus.append(TableauPile(tableau_rect, Card.cards_spritesheet.get_image(2, 4), tableau_spacing))
             for j in range (0, i + 1):
                 self.tableaus[i].add_card(cards[index])
@@ -78,6 +76,11 @@ class Solitaire:
                 self.should_quit = True
             elif event.type == MOUSEBUTTONDOWN:
                 if not self.dragged_cards:
+                    if self.stock.collidepoint(event.pos):
+                        cards_drawn = self.stock.draw_cards()
+                        for card in cards_drawn: 
+                            card.unhide()
+                            self.waste.add_card(card)
                     for tableau in self.tableaus:
                         if tableau.collidepoint(event.pos):
                             self.dragged_cards = tableau.start_drag(event.pos)

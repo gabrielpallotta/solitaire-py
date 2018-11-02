@@ -80,14 +80,42 @@ class StockPile(Group):
         Group.__init__(self)
         self.rect = rect
 
+    def collidepoint(self, point):
+        return self.rect.collidepoint(point)
+
     def add_card(self, card):
         card.rect.x = self.rect.x
         card.rect.y = self.rect.y
 
         Group.add(self, card)
 
+    def draw_cards(self):
+        card = self.sprites()[0]
+        self.remove(card)
+        return [card]
+    
+    def draw(self, surf):
+        if not self.sprites():
+            surf.blit(self.image, (self.rect.x, self.rect.y))
+        else:
+            surf.blit(self.sprites()[0].image, (self.rect.x, self.rect.y))
 
 class WastePile(Group):
-    def __init__(self, pos):
+    def __init__(self, rect, card_spacing):
         Group.__init__(self)
-        self.pos = pos
+        self.rect = rect
+        self.spacing = card_spacing
+    
+    def add_card(self, card):
+        Group.add(self, card)
+
+        i = 0
+        for card in self.sprites()[-3:]:
+            card.rect.x = self.rect.x + self.spacing * i
+            card.rect.y = self.rect.y
+            i += 1
+
+    
+    def draw(self, surf):
+        for card in self.sprites()[-3:]:
+            surf.blit(card.image, card.rect)
