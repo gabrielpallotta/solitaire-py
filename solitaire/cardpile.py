@@ -57,9 +57,13 @@ class TableauPile(Group):
             self.sprites()[-1].unhide()
 
     def drop(self, card_sprite_list):
-        for card in card_sprite_list:
-            self.add_card(card)
-
+        if Card.is_valid_tableau_append(self.sprites(), card_sprite_list[0]):
+            for card in card_sprite_list:
+                self.add_card(card)
+            return True
+        else:
+            return False
+            
     def draw(self, surf):
         if not self.sprites():
             surf.blit(self.image, (self.rect.x, self.rect.y))

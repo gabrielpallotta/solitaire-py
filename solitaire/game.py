@@ -27,7 +27,7 @@ class Solitaire:
         Card.load_spritesheet()
 
         width = 8 * spacing + 7 * int(Card.width)
-        height = 2 * spacing + int(Card.height) + 500
+        height = 2 * spacing + int(Card.height) + 400
         self.screen = pygame.display.set_mode((width, height))
         
         self.dragged_cards_pile = None
@@ -40,16 +40,16 @@ class Solitaire:
         pile_image = Card.cards_spritesheet.get_image(2, 4)
 
         cards = []
-        for i in range(0, 4):
-            for j in range(0, 13):
-                cards.append((Card(i, j, False)))
+        for suit in CardSuit:
+            for value in range(1, 14):
+                cards.append((Card(suit, value, False)))
         shuffle(cards)
  
         # Stock pile
         self.stock = StockPile(Rect(spacing, spacing, Card.width, Card.height), pile_image)
         
         # Waste pile
-        self.waste = WastePile(Rect(2 * spacing + Card.width, spacing, Card.width, Card.height), (Card.width + spacing ) / 2)
+        self.waste = WastePile(Rect(2 * spacing + Card.width, spacing, Card.width, Card.height), (Card.width + spacing ) / 4)
         
         # Foundation piles
         self.foundations = []
@@ -107,8 +107,8 @@ class Solitaire:
                 if self.dragged_cards:
                     for tableau in self.tableaus:
                         if tableau.collidepoint(event.pos):
-                            tableau.drop(self.dragged_cards)
-                            self.dragged_cards = []
+                            if tableau.drop(self.dragged_cards):
+                                self.dragged_cards = []
                             break
                     for card in self.dragged_cards:
                         self.dragged_cards_pile.add_card(card)

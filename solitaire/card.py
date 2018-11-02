@@ -24,21 +24,30 @@ class Card(Sprite):
         if not visible:
             return Card.cards_spritesheet.get_image(5, 4)
 
-        value -= 2
-        if value < 0:
-            value = 12
-
+        new_value = value - 1
+        new_suit = 0
         if suit == CardSuit.DIAMONDS:
-            suit = 1
+            new_suit = 1
         elif suit == CardSuit.SPADES:
-            suit = 3
+            new_suit = 3
         elif suit == CardSuit.HEARTS:
-            suit = 0
+            new_suit = 0
         elif suit == CardSuit.CLUBS:
-            suit = 2
+            new_suit = 2
         
-        return Card.cards_spritesheet.get_image(value, suit)
+        return Card.cards_spritesheet.get_image(new_value, new_suit)
     
+    @staticmethod
+    def is_valid_tableau_append(tableau_cards, new_card):
+        if not tableau_cards:
+            if new_card.value == 13:
+                return True
+        elif (abs(tableau_cards[-1].suit.value - new_card.suit.value) % 2 != 0 and
+               tableau_cards[-1].value - 1 == new_card.value):
+             return True
+            
+        return False
+
     def __init__(self, suit, value, visible, pos = (0, 0)):
         Sprite.__init__(self)
         self.suit = suit
