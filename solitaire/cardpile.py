@@ -76,9 +76,10 @@ class FoundationPile(Group):
             surf.blit(self.image, (self.rect.x, self.rect.y))
 
 class StockPile(Group):
-    def __init__(self, rect):
+    def __init__(self, rect, image):
         Group.__init__(self)
         self.rect = rect
+        self.image = image
 
     def collidepoint(self, point):
         return self.rect.collidepoint(point)
@@ -89,11 +90,15 @@ class StockPile(Group):
 
         Group.add(self, card)
 
-    def draw_cards(self):
+    #TODO: Implement 3 cards drawing
+    def get_cards(self):
         card = self.sprites()[0]
         self.remove(card)
         return [card]
     
+    def is_empty(self):
+        return not self.sprites()
+
     def draw(self, surf):
         if not self.sprites():
             surf.blit(self.image, (self.rect.x, self.rect.y))
@@ -115,7 +120,13 @@ class WastePile(Group):
             card.rect.y = self.rect.y
             i += 1
 
-    
+    def get_cards(self):
+        cards = []
+        for card in self.sprites():
+            cards.append(card)
+            self.remove(card)
+        return cards
+
     def draw(self, surf):
         for card in self.sprites()[-3:]:
             surf.blit(card.image, card.rect)

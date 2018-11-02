@@ -37,6 +37,8 @@ class Solitaire:
         self.background = self.background.convert()
         self.background.fill((66, 163, 78))
         
+        pile_image = Card.cards_spritesheet.get_image(2, 4)
+
         cards = []
         for i in range(0, 4):
             for j in range(0, 13):
@@ -44,7 +46,7 @@ class Solitaire:
         shuffle(cards)
  
         # Stock pile
-        self.stock = StockPile(Rect(spacing, spacing, Card.width, Card.height))
+        self.stock = StockPile(Rect(spacing, spacing, Card.width, Card.height), pile_image)
         
         # Waste pile
         self.waste = WastePile(Rect(2 * spacing + Card.width, spacing, Card.width, Card.height), (Card.width + spacing ) / 2)
@@ -53,14 +55,14 @@ class Solitaire:
         self.foundations = []
         for i in range (0, 4):
             foundation_rect = Rect(4 * spacing + 3 * Card.width + (spacing + Card.width) * i, spacing, Card.width, Card.height)
-            self.foundations.append(FoundationPile(foundation_rect, Card.cards_spritesheet.get_image(2, 4)))
+            self.foundations.append(FoundationPile(foundation_rect, pile_image))
 
         # Tableau piles
         self.tableaus = []
         index = 0
         for i in range(0, 7):
             tableau_rect = Rect(spacing + (spacing + Card.width) * i, 2 * spacing + Card.height, Card.width, Card.height)
-            self.tableaus.append(TableauPile(tableau_rect, Card.cards_spritesheet.get_image(2, 4), tableau_spacing))
+            self.tableaus.append(TableauPile(tableau_rect, pile_image, tableau_spacing))
             for j in range (0, i + 1):
                 self.tableaus[i].add_card(cards[index])
                 index += 1
@@ -77,10 +79,16 @@ class Solitaire:
             elif event.type == MOUSEBUTTONDOWN:
                 if not self.dragged_cards:
                     if self.stock.collidepoint(event.pos):
-                        cards_drawn = self.stock.draw_cards()
-                        for card in cards_drawn: 
-                            card.unhide()
-                            self.waste.add_card(card)
+                        if not self.stock.is_empty():
+                            cards_from_stock = self.stock.get_cards()
+                            for card in cards_from_stock: 
+                                card.unhide()
+                                self.waste.add_card(card)
+                        else:
+                            cards_from_waste = self.waste.get_cards()
+                            for card in cards_from_waste:
+                                card.hide()
+                                self.stock.add_card(card)
                     for tableau in self.tableaus:
                         if tableau.collidepoint(event.pos):
                             self.dragged_cards = tableau.start_drag(event.pos)
