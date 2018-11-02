@@ -94,6 +94,10 @@ class Solitaire:
                             self.dragged_cards = tableau.start_drag(event.pos)
                             self.dragged_cards_pile = tableau
                             break
+                    card = self.waste.start_drag(event.pos)
+                    if card:
+                        self.dragged_cards.append(card)
+                        self.dragged_cards_pile = self.waste
             elif event.type == MOUSEMOTION:
                 mouse_rel = pygame.mouse.get_rel()
                 for sprite in self.dragged_cards:

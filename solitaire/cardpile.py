@@ -113,7 +113,9 @@ class WastePile(Group):
     
     def add_card(self, card):
         Group.add(self, card)
-
+        self.update_cards_pos()
+    
+    def update_cards_pos(self):
         i = 0
         for card in self.sprites()[-3:]:
             card.rect.x = self.rect.x + self.spacing * i
@@ -126,6 +128,18 @@ class WastePile(Group):
             cards.append(card)
             self.remove(card)
         return cards
+
+    def start_drag(self, mouse_pos):
+        if self.sprites() and self.sprites()[-1].rect.collidepoint(mouse_pos):
+            card = self.sprites()[-1]
+            self.remove(card)
+            return card
+
+        return None
+
+    def end_drag(self):
+        self.update_cards_pos()
+        return 
 
     def draw(self, surf):
         for card in self.sprites()[-3:]:
