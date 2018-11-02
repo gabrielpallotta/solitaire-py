@@ -13,24 +13,16 @@ class CardSuit(Enum):
     CLUBS = 4
 
 class Card(Sprite):
-    def __init__(self, suit, value, visible, pos = (0, 0)):
-        Sprite.__init__(self)
-        self.suit = suit
-        self.value = value
-        self.visible = visible
-        self.image = Card.get_card_image(self.suit, self.value, self.visible)
-        self.rect = Rect(pos[0], pos[1], self.image.get_width(), self.image.get_height())
-        self.moving = False
-        self.last = pos
-
     @staticmethod
     def load_spritesheet():
-        Card.cards_spritesheet = SpriteSheet("res/cards_sprite.gif", 13, 5)
-
+        Card.cards_spritesheet = SpriteSheet("res/cards_sprite.png", 13, 5)
+        Card.width = Card.cards_spritesheet.w
+        Card.height = Card.cards_spritesheet.h
+        
     @staticmethod
     def get_card_image(suit, value, visible):
         if not visible:
-            return Card.cards_spritesheet.get_image(0, 4)
+            return Card.cards_spritesheet.get_image(5, 4)
 
         value -= 2
         if value < 0:
@@ -47,12 +39,22 @@ class Card(Sprite):
         
         return Card.cards_spritesheet.get_image(value, suit)
     
+    def __init__(self, suit, value, visible, pos = (0, 0)):
+        Sprite.__init__(self)
+        self.suit = suit
+        self.value = value
+        self.visible = visible
+        self.image = Card.get_card_image(self.suit, self.value, self.visible)
+        self.rect = Rect(pos[0], pos[1], self.image.get_width(), self.image.get_height())
+        self.moving = False
+        self.last = pos
+    
     def unhide(self):
         self.visible = True
         self.update_image()
 
     def hide(self):
-        self.card = card
+        self.visible = False
         self.update_image()
 
     def update_image(self):
