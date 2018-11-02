@@ -6,8 +6,8 @@ from pygame import Surface
 from random import shuffle
 
 from enum import Enum
-from card import Card, CardSuit
-from cardpile import *
+from solitaire.card import Card, CardSuit
+from solitaire.cardpile import *
 
 class GameState(Enum):
     MENU = 1
@@ -95,3 +95,8 @@ class Solitaire:
             self.screen.blit(card_sprite.image, card_sprite.rect)
         
         pygame.display.flip()
+
+    def run(self):
+        while not self.should_quit:
+            self.update()
+            self.render()

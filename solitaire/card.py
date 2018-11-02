@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 from pygame.sprite import Sprite
 
-from spritesheet import SpriteSheet
+from solitaire.spritesheet import SpriteSheet
 
 from enum import Enum
 

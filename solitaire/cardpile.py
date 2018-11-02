@@ -1,6 +1,6 @@
 from enum import Enum
 from pygame.sprite import Group
-from card import Card
+from solitaire.card import Card
 
 class CardPile(Group):
     def __init__(self, pos):
