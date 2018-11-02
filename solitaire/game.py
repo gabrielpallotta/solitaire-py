@@ -46,7 +46,7 @@ class Solitaire:
         shuffle(cards)
  
         # Stock pile
-        self.stock = StockPile(Rect(20, 20, Card.width, Card.height))
+        self.stock = StockPile(Rect(self.spacing, self.spacing, Card.width, Card.height))
         
         # Waste pile
         self.waste = WastePile(Rect(100, 0, Card.width, Card.height))
