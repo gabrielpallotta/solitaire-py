@@ -23,6 +23,8 @@ class Solitaire:
         pygame.init()
         self.screen = pygame.display.set_mode((500, 500))
         pygame.display.set_caption("Solitaire")
+        icon = pygame.image.load("res/icon.png")
+        pygame.display.set_icon(icon)
 
         Card.load_spritesheet()
 
