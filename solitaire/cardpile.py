@@ -86,11 +86,16 @@ class FoundationPile(Group):
     def collidepoint(self, pos):
         return self.rect.collidepoint(pos)
 
-    # def start_drag(self, mouse_pos):
+    def start_drag(self, mouse_pos):
+        if self.sprites() and self.collidepoint(mouse_pos):
+            card = self.sprites()[-1]
+            self.remove(card)
+            return [card]
+        else:
+             return []
 
-
-    # def end_drag(self):
-    #     return
+    def end_drag(self):
+        return
 
     def drop(self, card):
         can_drop = False
@@ -147,6 +152,12 @@ class WastePile(Group):
         Group.__init__(self)
         self.rect = rect
         self.spacing = card_spacing
+
+    def collidepoint(self, point):
+        if self.sprites():
+            return self.sprites()[-1].rect.collidepoint(point)
+        else:
+            return false
     
     def add_card(self, card):
         Group.add(self, card)
@@ -167,12 +178,12 @@ class WastePile(Group):
         return cards
 
     def start_drag(self, mouse_pos):
-        if self.sprites() and self.sprites()[-1].rect.collidepoint(mouse_pos):
+        if self.sprites() and self.collidepoint(mouse_pos):
             card = self.sprites()[-1]
             self.remove(card)
-            return card
+            return [card]
 
-        return None
+        return []
 
     def end_drag(self):
         self.update_cards_pos()
