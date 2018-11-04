@@ -112,6 +112,12 @@ class Solitaire:
                             if tableau.drop(self.dragged_cards):
                                 self.dragged_cards = []
                             break
+                    if len(self.dragged_cards) == 1:
+                        for foundation in self.foundations:
+                            if foundation.collidepoint(event.pos):
+                                if foundation.drop(self.dragged_cards[0]):
+                                    self.dragged_cards = []
+                                break
                     for card in self.dragged_cards:
                         self.dragged_cards_pile.add_card(card)
                     self.dragged_cards = []
