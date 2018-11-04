@@ -26,18 +26,6 @@ class CardAssets():
 
     @staticmethod
     def load_card_asset(suit, value):
-        new_value = ""
-        if value == 1:
-            new_value = "A"
-        elif value == 11:
-            new_value = "J"
-        elif value == 12:
-            new_value = "Q"
-        elif value == 13:
-            new_value = "K"
-        else:
-            new_value = str(value)
-
         new_suit = ""
         if suit == CardSuit.DIAMONDS.value:
             new_suit = "Diamonds"
@@ -48,7 +36,7 @@ class CardAssets():
         elif suit == CardSuit.CLUBS.value:
             new_suit = "Clubs"
     
-        return pygame.image.load("assets/cards/card" + new_suit + new_value + ".png").convert_alpha()
+        return pygame.image.load("assets/cards/card" + new_suit + str(value) + ".png").convert_alpha()
 
     @staticmethod
     def scale_surface(surface):
