@@ -23,9 +23,6 @@ class Solitaire:
         pygame.init()
         self.screen = pygame.display.set_mode((500, 500))
         pygame.display.set_caption("Solitaire")
-        icon = pygame.image.load("res/icon.png")
-        pygame.display.set_icon(icon)
-
         
         CardAssets.load_assets("red3", 0.7)
         card_width = CardAssets.card_width
