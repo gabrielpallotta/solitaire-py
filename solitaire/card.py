@@ -2,8 +2,6 @@ import pygame
 from pygame.locals import *
 from pygame.sprite import Sprite
 
-from solitaire.spritesheet import SpriteSheet
-
 from enum import Enum
 
 class CardSuit(Enum):
@@ -12,31 +10,63 @@ class CardSuit(Enum):
     HEARTS = 3
     CLUBS = 4
 
-class Card(Sprite):
+class CardAssets():
     @staticmethod
-    def load_spritesheet():
-        Card.cards_spritesheet = SpriteSheet("res/cards_sprite.png", 13, 5)
-        Card.width = Card.cards_spritesheet.w
-        Card.height = Card.cards_spritesheet.h
-        
-    @staticmethod
-    def get_card_image(suit, value, visible):
-        if not visible:
-            return Card.cards_spritesheet.get_image(5, 4)
+    def load_assets(card_back, scale):
+        CardAssets.scale = scale
+        CardAssets.assets = []
+        for i in range(0, 4):
+            CardAssets.assets.append([])
+            for j in range(0, 13):
+                CardAssets.assets[i].append(CardAssets.scale_surface(CardAssets.load_card_asset(i + 1, j + 1)))
+        CardAssets.back_asset = CardAssets.scale_surface(pygame.image.load("assets/cards/cardBack_" + card_back + ".png").convert_alpha())
+        CardAssets.pile_asset = CardAssets.scale_surface(pygame.image.load("assets/cards/panel.png").convert_alpha())
+        CardAssets.card_width = CardAssets.back_asset.get_width()
+        CardAssets.card_height = CardAssets.back_asset.get_height()
 
-        new_value = value - 1
-        new_suit = 0
-        if suit == CardSuit.DIAMONDS:
-            new_suit = 1
-        elif suit == CardSuit.SPADES:
-            new_suit = 3
-        elif suit == CardSuit.HEARTS:
-            new_suit = 0
-        elif suit == CardSuit.CLUBS:
-            new_suit = 2
-        
-        return Card.cards_spritesheet.get_image(new_value, new_suit)
+    @staticmethod
+    def load_card_asset(suit, value):
+        new_value = ""
+        if value == 1:
+            new_value = "A"
+        elif value == 11:
+            new_value = "J"
+        elif value == 12:
+            new_value = "Q"
+        elif value == 13:
+            new_value = "K"
+        else:
+            new_value = str(value)
+
+        new_suit = ""
+        if suit == CardSuit.DIAMONDS.value:
+            new_suit = "Diamonds"
+        elif suit == CardSuit.SPADES.value:
+            new_suit = "Spades"
+        elif suit == CardSuit.HEARTS.value:
+            new_suit = "Hearts"
+        elif suit == CardSuit.CLUBS.value:
+            new_suit = "Clubs"
     
+        return pygame.image.load("assets/cards/card" + new_suit + new_value + ".png").convert_alpha()
+
+    @staticmethod
+    def scale_surface(surface):
+        return pygame.transform.smoothscale(surface, 
+            (int(surface.get_width() * CardAssets.scale), 
+             int(surface.get_height() * CardAssets.scale)))
+
+    @staticmethod
+    def get_card_asset(suit, value, visible):
+        if not visible:
+            return CardAssets.back_asset
+        else:
+            print(suit.value)
+            print(value)
+            return CardAssets.assets[suit.value - 1][value - 1]
+
+class Card(Sprite):
+
     @staticmethod
     def is_valid_tableau_append(tableau_cards, new_card):
         if not tableau_cards:
@@ -53,7 +83,7 @@ class Card(Sprite):
         self.suit = suit
         self.value = value
         self.visible = visible
-        self.image = Card.get_card_image(self.suit, self.value, self.visible)
+        self.image = CardAssets.get_card_asset(self.suit, self.value, self.visible)
         self.rect = Rect(pos[0], pos[1], self.image.get_width(), self.image.get_height())
         self.moving = False
         self.last = pos
@@ -67,7 +97,7 @@ class Card(Sprite):
         self.update_image()
 
     def update_image(self):
-        self.image = Card.get_card_image(self.suit, self.value, self.visible)
+        self.image = CardAssets.get_card_asset(self.suit, self.value, self.visible)
 
     def move(self, pos):
         # if self.moving:

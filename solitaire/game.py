@@ -6,7 +6,7 @@ from pygame import Surface
 from random import shuffle
 
 from enum import Enum
-from solitaire.card import Card, CardSuit
+from solitaire.card import Card, CardSuit, CardAssets
 from solitaire.cardpile import *
 
 # TODO: use these game states
@@ -26,10 +26,13 @@ class Solitaire:
         icon = pygame.image.load("res/icon.png")
         pygame.display.set_icon(icon)
 
-        Card.load_spritesheet()
+        
+        CardAssets.load_assets("red3", 0.7)
+        card_width = CardAssets.card_width
+        card_height = CardAssets.card_height
 
-        width = 8 * spacing + 7 * int(Card.width)
-        height = 2 * spacing + int(Card.height) + 400
+        width = 8 * spacing + 7 * int(card_width)
+        height = 2 * spacing + int(card_height) + 600
         self.screen = pygame.display.set_mode((width, height))
         
         self.dragged_cards_pile = None
@@ -38,8 +41,6 @@ class Solitaire:
         self.background = Surface(self.screen.get_size())
         self.background = self.background.convert()
         self.background.fill((66, 163, 78))
-        
-        pile_image = Card.cards_spritesheet.get_image(2, 4)
 
         cards = []
         for suit in CardSuit:
@@ -48,23 +49,23 @@ class Solitaire:
         shuffle(cards)
  
         # Stock pile
-        self.stock = StockPile(Rect(spacing, spacing, Card.width, Card.height), pile_image)
+        self.stock = StockPile(Rect(spacing, spacing, card_width, card_height), CardAssets.pile_asset)
         
         # Waste pile
-        self.waste = WastePile(Rect(2 * spacing + Card.width, spacing, Card.width, Card.height), (Card.width + spacing ) / 4)
+        self.waste = WastePile(Rect(2 * spacing + card_width, spacing, card_width, card_height), (card_width + spacing ) / 4)
         
         # Foundation piles
         self.foundations = []
         for i in range (0, 4):
-            foundation_rect = Rect(4 * spacing + 3 * Card.width + (spacing + Card.width) * i, spacing, Card.width, Card.height)
-            self.foundations.append(FoundationPile(foundation_rect, pile_image))
+            foundation_rect = Rect(4 * spacing + 3 * card_width + (spacing + card_width) * i, spacing, card_width, card_height)
+            self.foundations.append(FoundationPile(foundation_rect, CardAssets.pile_asset))
 
         # Tableau piles
         self.tableaus = []
         index = 0
         for i in range(0, 7):
-            tableau_rect = Rect(spacing + (spacing + Card.width) * i, 2 * spacing + Card.height, Card.width, Card.height)
-            self.tableaus.append(TableauPile(tableau_rect, pile_image, tableau_spacing))
+            tableau_rect = Rect(spacing + (spacing + card_width) * i, 2 * spacing + card_height, card_width, card_height)
+            self.tableaus.append(TableauPile(tableau_rect, CardAssets.pile_asset, tableau_spacing))
             for j in range (0, i + 1):
                 self.tableaus[i].add_card(cards[index])
                 index += 1

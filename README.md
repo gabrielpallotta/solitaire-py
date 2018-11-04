@@ -29,5 +29,8 @@ game = Solitaire(10, 20)
 ```
 There will be more options in the future.
 
+## Credits
+Thanks to Kenney.nl for card assets!
+
 ## License
 This project is licensed under the MIT License.

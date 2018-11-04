@@ -1,6 +1,7 @@
 from enum import Enum
 from pygame.sprite import Group
 from pygame import Surface
+
 from solitaire.card import Card
 
 class TableauPile(Group):
