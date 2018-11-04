@@ -157,7 +157,7 @@ class WastePile(Group):
         if self.sprites():
             return self.sprites()[-1].rect.collidepoint(point)
         else:
-            return false
+            return False
     
     def add_card(self, card):
         Group.add(self, card)
